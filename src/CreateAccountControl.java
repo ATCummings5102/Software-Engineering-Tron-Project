@@ -5,10 +5,10 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class CreateAccountControl implements ActionListener {
-    private final JPanel container;
-    private final ChatClient client;
+    private JPanel container;
+    private ChatClient client;
 
-    public CreateAccountControl(JPanel container, ChatClient client) {
+    public CreateAccountControl(JPanel container, ChatClient client){
         this.container = container;
         this.client = client;
     }
@@ -17,21 +17,29 @@ public class CreateAccountControl implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
 
-        if (command.equals("Cancel")) {
-            CardLayout cardLayout = (CardLayout) container.getLayout();
-            cardLayout.show(container, "1");
-        } else if (command.equals("Submit")) {
-            CreateAccountPanel createAccountPanel = (CreateAccountPanel) container.getComponent(2);
-            createAccountPanel.setError("");
+        CreateAccountPanel createAccountPanel = (CreateAccountPanel)container.getComponent(2);
+        createAccountPanel.setError("");
 
-            if (createAccountPanel.getPassword().length() <= 6) {
+
+        if (command.equals("Cancel")){
+            createAccountPanel.setUserEntry("");
+            createAccountPanel.setPasswordEntry("");
+            createAccountPanel.setVerifyPasswordEntry("");
+
+            CardLayout cardLayout = (CardLayout)container.getLayout();
+            cardLayout.show(container, "1");
+        }
+        else if (command.equals("Submit")){
+            if (createAccountPanel.getPassword().length() <= 6){
                 displayError("Your password must be longer than 6 characters");
                 return;
-            } else if (!createAccountPanel.getPassword().equals(createAccountPanel.getVerifiedPassword())) {
+            }
+            else if (!createAccountPanel.getPassword().equals(createAccountPanel.getVerifiedPassword())){
                 displayError("Your passwords must match");
                 return;
-            } else if (createAccountPanel.getUsername().isEmpty() || createAccountPanel.getPassword().isEmpty() ||
-                    createAccountPanel.getVerifiedPassword().isEmpty()) {
+            }
+            else if (createAccountPanel.getUsername().isEmpty() || createAccountPanel.getPassword().isEmpty() ||
+            createAccountPanel.getVerifiedPassword().isEmpty()){
                 displayError("You must enter something to create an account");
                 return;
             }
@@ -49,8 +57,8 @@ public class CreateAccountControl implements ActionListener {
         }
     }
 
-    public void displayError(String error) {
-        CreateAccountPanel createAccountPanel = (CreateAccountPanel) container.getComponent(2);
+    public void displayError(String error){
+        CreateAccountPanel createAccountPanel = (CreateAccountPanel)container.getComponent(2);
         createAccountPanel.setError(error);
     }
 }

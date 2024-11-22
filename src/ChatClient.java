@@ -1,6 +1,6 @@
 import ocsf.client.AbstractClient;
 
-public class ChatClient extends AbstractClient {
+public class hatClient extends AbstractClient {
 
     public ChatClient() {
         super("localhost", 8300);
