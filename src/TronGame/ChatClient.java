@@ -1,8 +1,12 @@
+package TronGame;
+
 import ocsf.client.AbstractClient;
 
-public class hatClient extends AbstractClient {
+import javax.swing.*;
 
-    public ChatClient() {
+public class ChatClient extends AbstractClient {
+
+    public ChatClient(JPanel container) {
         super("localhost", 8300);
     }
 

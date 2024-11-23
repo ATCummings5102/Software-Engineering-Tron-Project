@@ -1,22 +1,29 @@
-import tron_game.CreateAccountControl;
-import tron_game.GameStartControl;
-import tron_game.GameStartPanel;
+package TronGame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
-public class TestMain extends JFrame {
+public class ClientGUI extends JFrame {
 
-    public TestMain(){
+    public ClientGUI(){
         setTitle("Tron Game");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         CardLayout cardLayout = new CardLayout();
         JPanel container = new JPanel(cardLayout);
 
+        ChatClient client = new ChatClient(container);
+
+        try {
+            client.openConnection();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         GameStartControl gsc = new GameStartControl(container);
-        LoginControl lc = new LoginControl(container);
-        CreateAccountControl ac = new CreateAccountControl(container);
+        LoginControl lc = new LoginControl(container, client);
+        CreateAccountControl ac = new CreateAccountControl(container, client);
 
         JPanel view1 = new GameStartPanel(gsc);
         JPanel view2 = new LoginPanel(lc);
@@ -34,6 +41,6 @@ public class TestMain extends JFrame {
     }
 
     public static void main(String[] args){
-        new TestMain();
+        new ClientGUI();
     }
 }

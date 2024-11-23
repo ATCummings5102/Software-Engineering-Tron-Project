@@ -1,4 +1,4 @@
-import tron_game.CreateAccountControl;
+package TronGame;
 
 import javax.swing.*;
 import java.awt.*;

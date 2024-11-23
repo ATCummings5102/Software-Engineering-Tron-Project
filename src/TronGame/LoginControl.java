@@ -1,5 +1,4 @@
-import tron_game.LoginData;
-import tron_game.LoginPanel;
+package TronGame;
 
 import javax.swing.*;
 import java.awt.*;
