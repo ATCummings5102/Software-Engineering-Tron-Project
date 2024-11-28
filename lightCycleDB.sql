@@ -1,44 +1,27 @@
--- LightCycle Database
-
-DROP TABLE IF EXISTS Leaderboard;
-DROP TABLE IF EXISTS PlayerStats;
 DROP TABLE IF EXISTS Games;
 DROP TABLE IF EXISTS Players;
 
-
+-- Players table
 CREATE TABLE Players (
-    username VARCHAR(30) PRIMARY KEY,
-    password VARBINARY(16) NOT NULL,
-    join_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- For debugging purposes for now.
+                         username VARCHAR(30) PRIMARY KEY,
+                         password VARBINARY(16) NOT NULL,
+                         total_wins INT DEFAULT 0,
+                         join_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
+-- Games table
 CREATE TABLE Games (
-    game_id INT AUTO_INCREMENT PRIMARY KEY,
-
-    start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- For debugging purposes for now.
-    end_time TIMESTAMP NULL -- For debugging purposes for now.
+                       game_id INT AUTO_INCREMENT PRIMARY KEY,
+                       start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                       end_time TIMESTAMP NULL
 );
 
--- Decided to seperate it from Players so that future updates to the table arent tied to the player account (just a seperation of concerns and easier to query IMO).
-CREATE TABLE PlayerStats (
-    stats_id INT AUTO_INCREMENT PRIMARY KEY,
-    game_id INT NOT NULL,
-    player_id INT NOT NULL,
-    curr_score INT DEFAULT 0,
-    total_wins INT DEFAULT 0
-);
-
--- Totally unnecessary but I wanna try to do it; it'll update based on who has the most wins, and it'll update to track whoever has most total wins.
-CREATE TABLE Leaderboard (
-    leaderboard_id INT AUTO_INCREMENT PRIMARY KEY,
-    player_id INT NOT NULL,
-    high_score INT NOT NULL,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Expierimental but could be nice to show when someone wins a game.
-);
-
-ALTER TABLE PlayerStats ADD CONSTRAINT fk_playerstats_game FOREIGN KEY (game_id) REFERENCES Games(game_id);
-
-ALTER TABLE PlayerStats ADD CONSTRAINT fk_playerstats_player FOREIGN KEY (player_id) REFERENCES Players(player_id);
-
-ALTER TABLE Leaderboard ADD CONSTRAINT fk_leaderboard_player FOREIGN KEY (player_id) REFERENCES Players(player_id);
+/*
+-- Test player data
+INSERT INTO Players (username, password, total_wins, join_date)
+VALUES
+    ('player1', AES_ENCRYPT('password123', 'key'), 5, '2024-11-01 10:00:00'),
+    ('player2', AES_ENCRYPT('securePass!@#', 'key'), 3, '2024-11-05 15:30:00'),
+    ('player3', AES_ENCRYPT('mypassword', 'key'), 8, '2024-10-20 09:45:00'),
+    ('player4', AES_ENCRYPT('admin2024', 'key'), 12, '2024-11-10 13:20:00');
+*/

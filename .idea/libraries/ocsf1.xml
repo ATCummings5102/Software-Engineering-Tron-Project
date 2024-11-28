@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="ocsf">
+  <library name="ocsf1">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/ocsf.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/ocsf.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
