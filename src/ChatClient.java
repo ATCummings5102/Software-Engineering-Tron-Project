@@ -1,8 +1,10 @@
 import ocsf.client.AbstractClient;
 
+import javax.swing.*;
+
 public class ChatClient extends AbstractClient {
 
-    public ChatClient() {
+    public ChatClient(JPanel container) {
         super("localhost", 8300);
     }
 

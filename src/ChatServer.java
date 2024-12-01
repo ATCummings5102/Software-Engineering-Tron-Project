@@ -8,6 +8,8 @@ public class ChatServer extends AbstractServer {
     private JTextArea log;
     private JLabel status;
 
+    private GameUI gameUI;
+
     public ChatServer() {
         super(12345);
     }
@@ -32,11 +34,13 @@ public class ChatServer extends AbstractServer {
         this.status = status;
     }
 
+
     @Override
     protected void handleMessageFromClient(Object arg0, ConnectionToClient arg1) {
 
         if (arg0 instanceof LoginData loginData) {
             System.out.println("Username: " + loginData.getUsername() + " Password: " + loginData.getPassword());
+            gameUI = new GameUI(loginData.getUsername());
         }
         // TODO Auto-generated method stub
         System.out.println("Message from Client" + arg0.toString() + arg1.toString());
