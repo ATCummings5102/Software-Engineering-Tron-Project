@@ -5,15 +5,30 @@ import java.awt.event.KeyListener;
 
 public class GameUI extends JPanel {
 
+    private Player player1;
+    private Player player2;
+
+    private void setPlayer(Player player)
+    {
+        if(player1 == null)
+        {
+            player1 = player;
+        }
+        else if(player2 == null)
+        {
+            player2 = player;
+        }
+        else
+        {
+            System.out.println("Max amount of players reached");
+        }
+    }
+
     public GameUI() {
 
         // Create player trails
         int arenaWidth = 100;
         int arenaHeight = 100;
-
-        // Create players
-        Player player1 = new Player("Player 1", new Position(4, 4), Direction.RIGHT);
-        Player player2 = new Player("Player 2", new Position(95, 95), Direction.LEFT);
 
         // Create the arena
         Arena arena = new Arena(arenaWidth, arenaHeight, player1.getTrail(), player2.getTrail());
@@ -58,4 +73,5 @@ public class GameUI extends JPanel {
         // Start the game
         gameController.startGame();
     }
+
 }

@@ -7,6 +7,7 @@ public class Player {
     private Position position;
     private Direction direction;
     private List<Position> trail;
+    private String playerLabel;
 
     public Player(String name, Position startPosition, Direction startDirection) {
         this.name = name;

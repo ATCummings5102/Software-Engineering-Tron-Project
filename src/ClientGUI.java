@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class clientGUI extends JFrame
+public class ClientGUI extends JFrame
 {
 
     private Arena arena;
@@ -10,7 +10,7 @@ public class clientGUI extends JFrame
     private Player player2;
     private ScoreBoard scoreBoard;
 
-    public clientGUI()
+    public ClientGUI()
     {
         // Set up the chat client.
         ChatClient client = new ChatClient();
@@ -77,6 +77,6 @@ public class clientGUI extends JFrame
     }
 
     public static void main(String[] args) {
-        new clientGUI();
+        new ClientGUI();
     }
 }
