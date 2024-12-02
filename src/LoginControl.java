@@ -53,8 +53,12 @@ public class LoginControl implements ActionListener {
     }
     public void handleLoginResponse(Object response) 
     {
+        String message = (String) response;
+
+        System.out.println("Message: " + message);
+
         // Check if login is successful
-        if (response instanceof String && response.equals("LoginSuccessful")) 
+        if (response != null && message.contains("Player joined"))
         {
             // If login is successful, call the loginSuccess() method
             loginSuccess();

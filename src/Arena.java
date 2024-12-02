@@ -1,13 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Arena extends JPanel {
     private int width;
     private int height;
     private int cellSize = 6; // Size of each square
-    private List<Position> player1Trail; // Player 1's trail
-    private List<Position> player2Trail; // Player 2's trail
+    private List<Position> player1Trail = new ArrayList<>(); // Player 1's trail
+    private List<Position> player2Trail = new ArrayList<>(); // Player 2's trail
 
     public Arena(int width, int height) {
         this.width = width;

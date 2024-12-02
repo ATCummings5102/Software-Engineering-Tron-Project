@@ -27,7 +27,8 @@ public class ChatClient extends AbstractClient
     public void handleMessageFromServer(Object msg) {
         // Check if the message is related to login success or error
         if (msg instanceof String) {
-            if (msg.equals("LoginSuccessful")) {
+            if (msg.equals("LoginSuccessful") || ((String) msg).contains("Player joined"))
+            {
                 // Handle login success
                 loginControl.handleLoginResponse(msg);
 
