@@ -2,17 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
-public class GameUI
-{
-    private static ArrayList<String> players;
-
-    public GameUI(String username)
-    {
-        players.add(username);
-    }
-
+public class GameUI {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Tron Game");
 
@@ -21,8 +12,8 @@ public class GameUI
         int arenaHeight = 100;
 
         // Create players
-        Player player1 = new Player(players.getFirst(), new Position(4, 4), Direction.RIGHT);
-        Player player2 = new Player(players.getLast(), new Position(95, 95), Direction.LEFT);
+        Player player1 = new Player("Player 1", new Position(4, 4), Direction.RIGHT);
+        Player player2 = new Player("Player 2", new Position(95, 95), Direction.LEFT);
 
         // Create the arena
         Arena arena = new Arena(arenaWidth, arenaHeight, player1.getTrail(), player2.getTrail());

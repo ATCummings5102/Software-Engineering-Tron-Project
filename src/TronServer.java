@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.io.IOException;
-import java.lang.Error;
 
 import javax.swing.JLabel;
 import javax.swing.JTextArea;

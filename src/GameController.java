@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class GameController {
@@ -29,10 +30,9 @@ public class GameController {
     // Starts the game by resetting positions, clearing the arena, and starting the game loop
     public void startGame() {
         arena.reset(player1, player2);
-        player1.resetPosition(new Position(4, 4), player1.getDirection());
-        player2.resetPosition(new Position(95, 95), player2.getDirection());
-        scoreBoard.resetScores();
-
+        player1.resetPosition(new Position(4, 4), Direction.DOWN);
+        player2.resetPosition(new Position(95, 95), Direction.LEFT);
+        this.gameLoop = new Timer(200, e -> updateGame());
         gameLoop.start();
     }
 
@@ -60,9 +60,15 @@ public class GameController {
         boolean collision1 = arena.checkCollision(player1);
         boolean collision2 = arena.checkCollision(player2);
 
+        // Check if both players occupy the same position
+        if (player1.getPosition().getX() == (player2.getPosition().getX()) && player1.getPosition().getY() == (player2.getPosition().getY())) {
+            showCountdownPopup("It's a draw!");
+            return true; // Both players collided together
+        }
+
         if (collision1 && collision2) {
-            JOptionPane.showMessageDialog(null, "It's a draw!");
-            return true; // Both players collided
+            showCountdownPopup("It's a draw!");
+            return true; // Both players collided with trails or walls
         } else if (collision1) {
             updateScore(player2); // Player 1 loses, Player 2 wins
             return true;
@@ -75,32 +81,90 @@ public class GameController {
 
     // Updates the score for the winning player
     private void updateScore(Player winner) {
-        //JOptionPane.showMessageDialog(null, winner.getName() + " wins this round!");
-
-        // Increment the winner's win count
+        scoreBoard.incrementScore(winner);
         if (winner == player1) {
             player1Wins++;
         } else {
             player2Wins++;
         }
 
-        // Update the scoreboard
-        scoreBoard.incrementScore(winner);
-
-        // Check if a player has won 3 rounds
+        // Check if a player has won the game
         if (player1Wins == MAX_WINS || player2Wins == MAX_WINS) {
             endGame();
         } else {
-            // Start a new round
-            round++;
-            startGame();
+            showCountdownPopup(winner.getName() + " wins this round!");
         }
     }
-    
+
+    // Displays a countdown popup with the given message
+    private void showCountdownPopup(String message) {
+        // Create a modal JDialog
+        JDialog dialog = new JDialog((Frame) null, "Next Round", true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setLayout(new BorderLayout());
+        dialog.setSize(300, 200);
+        dialog.setLocationRelativeTo(null); // Center the dialog
+
+        // Create a panel for vertically centered content
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contentPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+        dialog.add(contentPanel, BorderLayout.CENTER);
+
+        // Create labels for winner, round, and countdown
+        JLabel winnerLabel = new JLabel(message, SwingConstants.CENTER);
+        winnerLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        winnerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel roundLabel = new JLabel("Round " + round + " starts in", SwingConstants.CENTER);
+        roundLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        roundLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel countdownLabel = new JLabel("", SwingConstants.CENTER);
+        countdownLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        countdownLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Add the labels to the panel
+        contentPanel.add(Box.createVerticalGlue()); // Add some spacing at the top
+        contentPanel.add(winnerLabel);
+        contentPanel.add(Box.createVerticalStrut(10)); // Space between winner and round label
+        contentPanel.add(roundLabel);
+        contentPanel.add(Box.createVerticalStrut(10)); // Space between round label and countdown
+        contentPanel.add(countdownLabel);
+        contentPanel.add(Box.createVerticalGlue()); // Add some spacing at the bottom
+
+        // Create a countdown timer
+        Timer countdownTimer = new Timer(1000, null);
+        final int[] countdown = {5}; // Start from 5 seconds
+        countdownTimer.addActionListener(e -> {
+            if (countdown[0] > 0) {
+                countdownLabel.setText(String.valueOf(countdown[0]));
+                countdown[0]--;
+            } else {
+                countdownTimer.stop();
+                dialog.dispose(); // Close the dialog when the countdown ends
+                startNextRound();
+            }
+        });
+
+        // Start the timer and show the dialog
+        countdownTimer.start();
+        dialog.setVisible(true);
+    }
+
+
+    // Starts the next round
+    private void startNextRound() {
+        round++;
+        scoreBoard.updateRound(round);
+        startGame();
+    }
+
     // Ends the game and displays the overall winner
     private void endGame() {
         String overallWinner = (player1Wins == MAX_WINS) ? player1.getName() : player2.getName();
-        JOptionPane.showMessageDialog(null, overallWinner + " is the overall winner!");
+        JOptionPane.showMessageDialog(null, overallWinner + " is the winner!");
         resetGame(); // Reset for a new game
     }
 
@@ -109,12 +173,9 @@ public class GameController {
         player1Wins = 0;
         player2Wins = 0;
         scoreBoard.resetScores();
+        round = 1;
+        scoreBoard.updateRound(round);
         startGame();
-    }
-
-    // Sends data to a server 
-    public void sendToServer(Object object) {
-        // Implement networking logic here 
     }
 
     public void handleKeyPress(KeyEvent e) {

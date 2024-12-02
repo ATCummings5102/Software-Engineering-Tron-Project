@@ -42,7 +42,7 @@ public class TronServerGUI extends JFrame
         JPanel south = new JPanel();
 
         //Set up the Tron logo to display at top
-        ImageIcon gameLogo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/tronLogo.png")));
+        ImageIcon gameLogo = new ImageIcon(Objects.requireNonNull(getClass().getResource("tronLogo.png")));
         JLabel logoLabel = new JLabel(gameLogo);
         north.add(logoLabel, BorderLayout.NORTH);
 

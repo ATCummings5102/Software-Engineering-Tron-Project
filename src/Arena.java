@@ -30,8 +30,8 @@ public class Arena extends JPanel {
         Position position = player.getPosition();
 
         // Check if out of bounds
-        if (position.getX() < 0 || position.getX() >= width || 
-            position.getY() < 0 || position.getY() >= height) {
+        if (position.getX() < 0 || position.getX() >= width ||
+                position.getY() < 0 || position.getY() >= height) {
             return true;
         }
 
