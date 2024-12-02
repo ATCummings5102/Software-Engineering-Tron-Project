@@ -69,7 +69,7 @@ public class LoginControl implements ActionListener {
     public void loginSuccess() {
         // Switch back to the initial panel.
         CardLayout cardLayout = (CardLayout) container.getLayout();
-        cardLayout.show(container, "1");
+        cardLayout.show(container, "4");
 
         // Enable the Host Game and Join Game buttons.
         InitialPanel initialPanel = (InitialPanel) container.getComponent(0);

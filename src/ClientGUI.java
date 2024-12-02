@@ -2,9 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class clientGUI extends JFrame {
+public class clientGUI extends JFrame
+{
 
-    public clientGUI() {
+    private Arena arena;
+    private Player player1;
+    private Player player2;
+    private ScoreBoard scoreBoard;
+
+    public clientGUI()
+    {
         // Set up the chat client.
         ChatClient client = new ChatClient();
         client.setHost("localhost");
@@ -36,6 +43,7 @@ public class clientGUI extends JFrame {
         InitialControl ic = new InitialControl(container);
         LoginControl lc = new LoginControl(container, client);
         CreateAccountControl cac = new CreateAccountControl(container, client);
+        GameController gameController = new GameController(arena, player1, player2, scoreBoard);
 
         // Set the client info in the controllers
         client.setLoginControl(lc);
@@ -45,11 +53,13 @@ public class clientGUI extends JFrame {
         JPanel view1 = new InitialPanel(ic);
         JPanel view2 = new LoginPanel(lc);
         JPanel view3 = new CreateAccountPanel(cac);
+        JPanel view4 = new GameUI();
 
         // Add the views to the card layout container
         container.add(view1, "1");
         container.add(view2, "2");
         container.add(view3, "3");
+        container.add(view4, "4");
 
         // Show the initial view in the card layout
         cardLayout.show(container, "1");

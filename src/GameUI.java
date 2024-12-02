@@ -3,9 +3,9 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class GameUI {
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Tron Game");
+public class GameUI extends JPanel {
+
+    public GameUI() {
 
         // Create player trails
         int arenaWidth = 100;
@@ -25,17 +25,18 @@ public class GameUI {
         GameController gameController = new GameController(arena, player1, player2, scoreBoard);
 
         // Set up the layout
-        frame.setLayout(new BorderLayout());
-        frame.add(arena, BorderLayout.CENTER);
-        frame.add(scoreBoard, BorderLayout.EAST);
+        this.setLayout(new BorderLayout());
+        this.add(arena, BorderLayout.CENTER);
+        this.add(scoreBoard, BorderLayout.EAST);
 
-        // Configure frame
-        frame.pack();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        this.setVisible(true);
+
+        // Ensure the panel is focusable
+        this.setFocusable(true);
+        this.requestFocusInWindow();
 
         // Add key listener to capture WASD (Player 1) and Arrow keys (Player 2)
-        frame.addKeyListener(new KeyListener() {
+        this.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
                 // Not used
@@ -44,6 +45,8 @@ public class GameUI {
             @Override
             public void keyPressed(KeyEvent e) {
                 gameController.handleKeyPress(e);
+                // Repaint the UI to reflect changes
+                repaint();
             }
 
             @Override
