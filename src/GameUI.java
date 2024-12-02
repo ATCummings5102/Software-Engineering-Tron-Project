@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class GameUI extends JPanel {
 
@@ -10,85 +10,83 @@ public class GameUI extends JPanel {
     private Arena arena;
     private ScoreBoard scoreBoard;
     private GameController gameController;
-    private final int arenaWidth = 100;
-    private final int arenaHeight = 100;
+    private final int arenaWidth;
+    private final int arenaHeight;
 
-    private void setPlayer(Player player)
-    {
-        if(player1 == null)
-        {
-            player1 = player;
-            arena.setPlayer1Trail(player1.getTrail());
-            scoreBoard.setPlayer1(player1);
-        }
-        else if(player2 == null)
-        {
-            player2 = player;
-            arena.setPlayer2Trail(player2.getTrail());
-            scoreBoard.setPlayer2(player2);
-        }
-        else
-        {
-            System.out.println("Max amount of players reached");
-        }
-    }
+    // Constructor to initialize the game with a dynamic arena size
+    public GameUI(int arenaWidth, int arenaHeight) {
+        this.arenaWidth = arenaWidth;
+        this.arenaHeight = arenaHeight;
 
-    private void createArena()
-    {
-        // Create the arena
-        arena = new Arena(arenaWidth, arenaHeight);
-    }
-
-    private void createScoreboard()
-    {
-        // Create the scoreboard
-        scoreBoard = new ScoreBoard();
-    }
-
-    public GameUI()
-    {
+        // Initialize components
         createArena();
         createScoreboard();
 
-        if(player1 != null && player2 != null)
-        {
-            // Create the game controller
-            gameController = new GameController(arena, player1, player2, scoreBoard);
-            // Start the game
-            gameController.startGame();
+        // Set up layout and listeners
+        setupLayout();
+        setupKeyListener();
+
+        // Make panel focusable for key events
+        this.setVisible(true);
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+    }
+
+    public void setPlayer(Player player) {
+        if (player1 == null) {
+            player1 = player;
+            arena.setPlayer1Trail(player1.getTrail());
+            scoreBoard.setPlayer1(player1);
+        } else if (player2 == null) {
+            player2 = player;
+            arena.setPlayer2Trail(player2.getTrail());
+            scoreBoard.setPlayer2(player2);
+        } else {
+            throw new IllegalStateException("Maximum number of players reached. Only two players are allowed.");
         }
 
-        // Set up the layout
+        // Create the game controller when both players are set
+        if (player1 != null && player2 != null) {
+            createGameController();
+        }
+    }
+
+    private void createArena() {
+        arena = new Arena(arenaWidth, arenaHeight);
+    }
+
+    private void createScoreboard() {
+        scoreBoard = new ScoreBoard();
+    }
+
+    private void createGameController() {
+        gameController = new GameController(arena, player1, player2, scoreBoard);
+        gameController.startGame();
+    }
+
+    private void setupLayout() {
         this.setLayout(new BorderLayout());
         this.add(arena, BorderLayout.CENTER);
         this.add(scoreBoard, BorderLayout.EAST);
+    }
 
-        this.setVisible(true);
-
-        // Ensure the panel is focusable
-        this.setFocusable(true);
-        this.requestFocusInWindow();
-
-        // Add key listener to capture WASD (Player 1) and Arrow keys (Player 2)
-        this.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                // Not used
-            }
-
+    private void setupKeyListener() {
+        this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                gameController.handleKeyPress(e);
-                // Repaint the UI to reflect changes
-                repaint();
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                // Not used
+                if (gameController != null) {
+                    gameController.handleKeyPress(e);
+                    repaint();
+                }
             }
         });
 
+        // Ensure focus remains on the game panel
+        this.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                requestFocusInWindow();
+            }
+        });
     }
-
 }
