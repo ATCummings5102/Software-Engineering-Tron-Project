@@ -4,12 +4,7 @@ import java.io.IOException;
 
 public class ClientGUI extends JFrame
 {
-
-    private Arena arena;
-    private Player player1;
-    private Player player2;
-    private ScoreBoard scoreBoard;
-
+    
     public ClientGUI()
     {
         // Set up the chat client.
@@ -43,7 +38,6 @@ public class ClientGUI extends JFrame
         InitialControl ic = new InitialControl(container);
         LoginControl lc = new LoginControl(container, client);
         CreateAccountControl cac = new CreateAccountControl(container, client);
-        GameController gameController = new GameController(arena, player1, player2, scoreBoard);
 
         // Set the client info in the controllers
         client.setLoginControl(lc);

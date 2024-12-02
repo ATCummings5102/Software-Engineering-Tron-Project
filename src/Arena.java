@@ -9,14 +9,22 @@ public class Arena extends JPanel {
     private List<Position> player1Trail; // Player 1's trail
     private List<Position> player2Trail; // Player 2's trail
 
-    public Arena(int width, int height, List<Position> player1Trail, List<Position> player2Trail) {
+    public Arena(int width, int height) {
         this.width = width;
         this.height = height;
-        this.player1Trail = player1Trail;
-        this.player2Trail = player2Trail;
 
         setPreferredSize(new Dimension(width * cellSize, height * cellSize));
         setMinimumSize(new Dimension(width * cellSize, height * cellSize));
+    }
+
+    protected void setPlayer1Trail(List<Position> player1Trail)
+    {
+        this.player1Trail = player1Trail;
+    }
+
+    protected void setPlayer2Trail(List<Position> player2Trail)
+    {
+        this.player2Trail = player2Trail;
     }
 
     // Adds the player's current position to their trail

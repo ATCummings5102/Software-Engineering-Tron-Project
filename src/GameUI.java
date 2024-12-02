@@ -7,16 +7,25 @@ public class GameUI extends JPanel {
 
     private Player player1;
     private Player player2;
+    private Arena arena;
+    private ScoreBoard scoreBoard;
+    private GameController gameController;
+    private final int arenaWidth = 100;
+    private final int arenaHeight = 100;
 
     private void setPlayer(Player player)
     {
         if(player1 == null)
         {
             player1 = player;
+            arena.setPlayer1Trail(player1.getTrail());
+            scoreBoard.setPlayer1(player1);
         }
         else if(player2 == null)
         {
             player2 = player;
+            arena.setPlayer2Trail(player2.getTrail());
+            scoreBoard.setPlayer2(player2);
         }
         else
         {
@@ -24,20 +33,30 @@ public class GameUI extends JPanel {
         }
     }
 
-    public GameUI() {
-
-        // Create player trails
-        int arenaWidth = 100;
-        int arenaHeight = 100;
-
+    private void createArena()
+    {
         // Create the arena
-        Arena arena = new Arena(arenaWidth, arenaHeight, player1.getTrail(), player2.getTrail());
+        arena = new Arena(arenaWidth, arenaHeight);
+    }
 
+    private void createScoreboard()
+    {
         // Create the scoreboard
-        ScoreBoard scoreBoard = new ScoreBoard(player1, player2);
+        scoreBoard = new ScoreBoard();
+    }
 
-        // Create the game controller
-        GameController gameController = new GameController(arena, player1, player2, scoreBoard);
+    public GameUI()
+    {
+        createArena();
+        createScoreboard();
+
+        if(player1 != null && player2 != null)
+        {
+            // Create the game controller
+            gameController = new GameController(arena, player1, player2, scoreBoard);
+            // Start the game
+            gameController.startGame();
+        }
 
         // Set up the layout
         this.setLayout(new BorderLayout());
@@ -70,8 +89,6 @@ public class GameUI extends JPanel {
             }
         });
 
-        // Start the game
-        gameController.startGame();
     }
 
 }
