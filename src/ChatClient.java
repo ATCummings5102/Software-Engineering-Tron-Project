@@ -13,7 +13,7 @@ public class ChatClient extends AbstractClient {
 
     public ChatClient()
     {
-        super("localhost", 8300);
+        super("10.252.147.176", 8300);
     }
 
     // Setter for ClientGUI

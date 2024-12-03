@@ -67,7 +67,7 @@ public class TronServer extends AbstractServer {
             String username = loginData.getUsername();
             log.append("Login Attempt: Username=" + username + ", Password=" + loginData.getPassword() + "\n");
 
-            if (players.size() < MAX_PLAYERS) {
+            if (players.size() < 3) {
                 createPlayer(username);
                 log.append("Player added: " + username + "\n");
                 log.append("Player count: " + players.size() + "\n");
