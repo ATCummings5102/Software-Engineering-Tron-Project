@@ -69,6 +69,7 @@ public class TronServer extends AbstractServer {
                 log.append("Player added: " + username + "\n");
                 log.append("Player count: " + players.size() + "\n");
                 sendToAllClients("Player joined: " + username);
+                sendToAllClients(players.getLast());
             } else {
                 log.append("Player rejected: " + username + " (Maximum players reached)\n");
                 try {
