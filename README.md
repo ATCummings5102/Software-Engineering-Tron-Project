@@ -1,50 +1,48 @@
-# Software-Engineering-Tron-Project
+# Tron Game Multiplayer Project
 
-A Tron-style game made in Java using client-server communication to allow two players to compete against each other within a Java GUI environment.
+Welcome to the **Tron Game Multiplayer Project**, a modern adaptation of the classic Tron game with a multiplayer focus. The game allows players to compete in a grid arena, leaving trails behind them as they move, with the goal of avoiding collisions and outlasting their opponents.
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [License](#license)
-
-## Introduction
-This project is a Tron-style game developed as part of a software engineering course. The game is built in Java and features client-server communication to support multiplayer gameplay.
+---
 
 ## Features
-- Tron-style gameplay
-- Java GUI for user interaction
-- Client-server architecture
-- Multiplayer support for two players
+
+- **Multiplayer Gameplay**: Supports multiple players with real-time interactions.
+- **Dynamic Arena**: Tracks player movements, trails, and collisions in real-time.
+- **Scoreboard**: Displays player scores and updates dynamically as the game progresses.
+- **Chat Integration**: Players can communicate via an in-game chat system.
+- **Server-Client Architecture**: Powered by a robust backend for handling game state and client interactions.
+- **User Authentication**: Secure login and account creation with validation.
+
+---
+
+## Class Structure
+
+The project is implemented in Java and follows an object-oriented design pattern with the following main classes:
+
+- **Arena**: Manages the game arena and player trails.
+- **Player**: Represents individual players and their states.
+- **GameController**: Orchestrates game logic, including movements, collisions, and scoring.
+- **TronServer**: Backend server that handles player connections and game data.
+- **Database**: Manages user authentication and leaderboard data.
+- **ClientGUI**: Provides a user-friendly interface for players.
+
+For a detailed overview, see the [UML Diagram](docs/UML.md).
+
+---
 
 ## Installation
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/ATCummings5102/Software-Engineering-Tron-Project.git
-    ```
-2. Navigate to the project directory:
-    ```bash
-    cd Software-Engineering-Tron-Project
-    ```
-3. Compile the project:
-    ```bash
-    javac -d bin src/**/*.java
-    ```
-4. Run the server:
-    ```bash
-    java -cp bin com.example.tron.server.Server
-    ```
-5. Run the client (in a separate terminal or machine):
-    ```bash
-    java -cp bin com.example.tron.client.Client
-    ```
 
-## Usage
-- Start the server and wait for clients to connect.
-- Run the client application and connect to the server using the server's IP address.
-- Enjoy the game!
+### Prerequisites
 
+Ensure you have the following installed:
 
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+- **Java Development Kit (JDK)** 17 or later
+- **Maven** (optional for dependency management)
+- **MySQL** or any compatible relational database
+
+### Steps
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/yourusername/tron-multiplayer.git
+   cd tron-multiplayer
