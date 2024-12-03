@@ -46,3 +46,32 @@ Ensure you have the following installed:
    ```bash
    git clone https://github.com/yourusername/tron-multiplayer.git
    cd tron-multiplayer
+2. **Run SQL File:**
+
+- Navigate to the scripts directory in the project folder.
+- Locate the database.sql file.
+- Open your MySQL client (e.g., MySQL Workbench or command line).
+- Execute the following commands to create and populate the database:
+-- sql
+-- Copy code
+-- SOURCE /path/to/scripts/database.sql;
+-- Replace /path/to/scripts/ with the path to your database.sql file.
+
+3. **Run BAT Files:**
+
+- Locate the .bat files for running the server and client:
+-- TronGameServer.bat
+-- TronGameClient.bat
+- Double-click each .bat file to launch the server and client.
+- When prompted, ensure you click "Allow Access" to grant secure access through your system's firewall for both the server and client.
+4. **Usage:**
+- Start the Server: Run run-server.bat to initialize the server and wait for the server to display "Server is running...".
+- Connect Clients: Use run-client.bat to launch the client application. Players can log in or create accounts to join the game.
+5. **Gameplay:**
+- Move around the grid using arrow keys.
+- Avoid collisions with trails (yours and others).
+- Accumulate points by outlasting your opponents.
+6. **Troubleshooting:**
+- Firewall Issues: If you experience connection issues, check your system firewall settings and allow access to the Java runtime for both server and client applications.
+7. **Database Connection:** 
+-Ensure the database server is running and the credentials in db.properties are correctly configured.
