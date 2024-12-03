@@ -1,6 +1,7 @@
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.awt.Color;
 
 public class Player implements Serializable {
     private String name;
@@ -10,17 +11,20 @@ public class Player implements Serializable {
     private List<Position> trail;
     private String playerLabel;
     private int ID;
+    private Color trailColor;
 
-    public Player(String name, int ID) {
+    public Player(String name, int ID, Color trailColor) {
         this.name = name;
         this.ID = ID;
+        this.trailColor = trailColor;
         this.trail = new CopyOnWriteArrayList<>();
     }
 
-    public Player(String name, Position startPosition, Direction startDirection) {
+    public Player(String name, Position startPosition, Direction startDirection, Color trailColor) {
         this.name = name;
         this.position = startPosition;
         this.direction = startDirection;
+        this.trailColor = trailColor;
         this.trail = new CopyOnWriteArrayList<>();
         this.trail.add(new Position(startPosition.getX(), startPosition.getY())); // Mark initial position
         this.ID = generateUniqueID();
@@ -52,6 +56,10 @@ public class Player implements Serializable {
 
     public List<Position> getTrail() {
         return trail;
+    }
+
+    public Color getTrailColor() {
+        return trailColor;
     }
 
     public void setScore(int score) {

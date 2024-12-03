@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +10,21 @@ public class Arena extends JPanel {
     private int cellSize = 6; // Size of each square
     private List<Position> playerTrail = new ArrayList<>(); // Player's trail
     private GameUI gameUI; // Reference to GameUI
+    private BufferedImage offScreenImage; // Off-screen image for double buffering
+    private Color playerColor; // Color of the player's trail
 
-    public Arena(int width, int height, GameUI gameUI) {
+    public Arena(int width, int height, GameUI gameUI, Color playerColor) {
         this.width = width;
         this.height = height;
         this.gameUI = gameUI;
+        this.playerColor = playerColor;
 
         setPreferredSize(new Dimension(width * cellSize, height * cellSize));
         setMinimumSize(new Dimension(width * cellSize, height * cellSize));
+        setDoubleBuffered(true); // Enable double buffering
+
+        // Initialize the off-screen image
+        offScreenImage = new BufferedImage(width * cellSize, height * cellSize, BufferedImage.TYPE_INT_ARGB);
     }
 
     public void setPlayerTrail(List<Position> playerTrail) {
@@ -27,11 +35,12 @@ public class Arena extends JPanel {
     public void addSegment(Player player) {
         player.getTrail().add(new Position(player.getPosition().getX(), player.getPosition().getY()));
         gameUI.sendTrailToServer(); // Send trail to server
+        updateOffScreenImage();
         repaint();
     }
 
-    // Checks for collisions with walls or trails
-    public boolean checkCollision(Player player) {
+    // Checks for collisions with walls, trails, or other player's trail
+    public boolean checkCollision(Player player, Color otherPlayerColor) {
         Position position = player.getPosition();
 
         // Check if out of bounds
@@ -40,41 +49,68 @@ public class Arena extends JPanel {
             return true;
         }
 
-        // Check for collisions with the player's trail
-        return isPositionInTrail(position, playerTrail);
+        // Check for collisions with the trail color
+        return isTrailColor(position, playerColor) || isTrailColor(position, otherPlayerColor);
     }
 
-    // Helper to check if a position is in a given trail
-    private boolean isPositionInTrail(Position position, List<Position> trail) {
-        return trail.stream().anyMatch(p -> p.getX() == position.getX() && p.getY() == position.getY());
+    // Helper to check if the position has the trail color
+    private boolean isTrailColor(Position position, Color trailColor) {
+        int x = position.getX() * cellSize;
+        int y = position.getY() * cellSize;
+        int color = offScreenImage.getRGB(x, y);
+        return color == trailColor.getRGB();
     }
 
     // Resets the arena, clearing the player's trail
     public void reset(Player player) {
         playerTrail.clear();
         playerTrail.add(new Position(player.getPosition().getX(), player.getPosition().getY())); // Add starting position
+        updateOffScreenImage();
+        repaint();
+    }
+
+    // Clears the arena
+    public void clear() {
+        playerTrail.clear();
+        updateOffScreenImage();
+        repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Render the grid background
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, width * cellSize, height * cellSize);
+        // Draw off-screen image
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.drawImage(offScreenImage, 0, 0, this);
+    }
 
-        g.setColor(Color.GREEN);
+    // Method to update the off-screen image
+    public void updateOffScreenImage() {
+        Graphics2D g2d = offScreenImage.createGraphics();
+
+        // Enable anti-aliasing for better visual quality
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Render the grid background
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, width * cellSize, height * cellSize);
+
+        // Draw the player's trail
+        g2d.setColor(playerColor);
         for (Position position : playerTrail) {
-            g.fillRect(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
+            g2d.fillRect(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
         }
 
         // Draw grid lines
-        g.setColor(Color.DARK_GRAY);
+        g2d.setColor(Color.DARK_GRAY);
         for (int row = 0; row <= height; row++) {
-            g.drawLine(0, row * cellSize, width * cellSize, row * cellSize);
+            g2d.drawLine(0, row * cellSize, width * cellSize, row * cellSize);
         }
         for (int col = 0; col <= width; col++) {
-            g.drawLine(col * cellSize, 0, col * cellSize, height * cellSize);
+            g2d.drawLine(col * cellSize, 0, col * cellSize, height * cellSize);
         }
+
+        g2d.dispose();
     }
 }

@@ -19,7 +19,7 @@ public class GameUI extends JPanel {
         this.arenaHeight = arenaHeight;
         this.clientGUI = clientGUI;
 
-        createArena();
+        createArena(); // Initialize arena before setting up layout
         createScoreboard();
         setupLayout();
         setupKeyListener();
@@ -45,7 +45,13 @@ public class GameUI extends JPanel {
     }
 
     private void createArena() {
-        arena = new Arena(arenaWidth, arenaHeight, this);
+        if (player != null) {
+            Color playerColor = player.getTrailColor(); // Get the player's trail color
+            arena = new Arena(arenaWidth, arenaHeight, this, playerColor);
+        } else {
+            System.out.println("Player is not initialized.");
+            arena = new Arena(arenaWidth, arenaHeight, this, Color.GRAY); // Default color if player is not initialized
+        }
     }
 
     private void createScoreboard() {

@@ -1,5 +1,8 @@
+// GameController.java
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 public class GameController {
@@ -21,8 +24,13 @@ public class GameController {
         this.playerWins = 0;
         this.collisionHandler = new CollisionHandler(); // Initialize collisionHandler
 
-        // Initialize game loop
-        this.gameLoop = new Timer(200, e -> updateGame());
+        // Initialize game loop with a shorter interval for smoother updates
+        this.gameLoop = new Timer(50, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateGame();
+            }
+        });
     }
 
     // Starts the game by resetting positions, clearing the arena, and starting the game loop
@@ -34,9 +42,6 @@ public class GameController {
 
     // Updates the game state
     private void updateGame() {
-        // Add their segments to their respective trails
-        arena.addSegment(player);
-
         // Move player
         player.move();
 
@@ -44,9 +49,13 @@ public class GameController {
         if (player.checkSelfCollision() || player.checkBoundaryCollision(arena.getWidth(), arena.getHeight())) {
             gameLoop.stop(); // Stop the game loop
             updateScore();
+        } else {
+            // Add their segments to their respective trails
+            arena.addSegment(player);
         }
 
-        // Repaint the arena
+        // Update the off-screen image and repaint the arena
+        arena.updateOffScreenImage();
         arena.repaint();
     }
 
@@ -134,11 +143,12 @@ public class GameController {
     }
 
     // Resets the game for a new session
-    private void resetGame() {
+    public void resetGame() {
         playerWins = 0;
         scoreBoard.resetScores();
         round = 1;
         scoreBoard.updateRound(round);
+        arena.clear(); // Clear the arena
         startGame();
     }
 

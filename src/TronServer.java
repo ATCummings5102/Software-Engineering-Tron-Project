@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -62,8 +63,7 @@ public class TronServer extends AbstractServer {
 
     @Override
     public void handleMessageFromClient(Object arg0, ConnectionToClient client) {
-        if (arg0 instanceof LoginData loginData)
-        {
+        if (arg0 instanceof LoginData loginData) {
             String username = loginData.getUsername();
             log.append("Login Attempt: Username=" + username + ", Password=" + loginData.getPassword() + "\n");
 
@@ -73,9 +73,7 @@ public class TronServer extends AbstractServer {
                 log.append("Player count: " + players.size() + "\n");
                 sendToAllClients("Player joined: " + username);
                 sendToAllClients(tempPlayer);
-            }
-            else
-            {
+            } else {
                 log.append("Player rejected: " + username + " (Maximum players reached)\n");
                 try {
                     client.sendToClient("Error: Maximum players reached. You cannot join the game.");
@@ -84,12 +82,9 @@ public class TronServer extends AbstractServer {
                     log.append("Error sending message to client: " + e.getMessage() + "\n");
                 }
             }
-        }
-        else if (arg0 instanceof CreateAccountData)
-        {
+        } else if (arg0 instanceof CreateAccountData) {
             // Account creation logic here (if needed)
-        }
-        else if (arg0 instanceof PlayerTrailData playerTrailData) {
+        } else if (arg0 instanceof PlayerTrailData playerTrailData) {
             String playerName = playerTrailData.getPlayerName();
             List<Position> playerTrail = playerTrailData.getPlayerTrail();
             log.append("Received trail data from player: " + playerName + "\n");
@@ -116,25 +111,30 @@ public class TronServer extends AbstractServer {
                     }
                 }
             }
-        }
-        else
-        {
-
+        } else {
             log.append("Received message from client: " + arg0 + "\n");
             sendToAllClients(arg0); // Relay the message to all clients
         }
     }
 
-    private void createPlayer(String username){
+    private void createPlayer(String username) {
         Position startPosition = new Position(5, 15); // Default starting position
         Direction startDirection = Direction.RIGHT;  // Default direction
-        Player newPlayer = new Player(username, startPosition, startDirection);
+        Color trailColor = getRandomColor(); // Generate a random trail color
+        Player newPlayer = new Player(username, startPosition, startDirection, trailColor);
         tempPlayer = newPlayer;
         players.add(newPlayer);
     }
 
-    private ArrayList<Player> getPlayer()
-    {
+    private Color getRandomColor() {
+        Random rand = new Random();
+        int r = rand.nextInt(256);
+        int g = rand.nextInt(256);
+        int b = rand.nextInt(256);
+        return new Color(r, g, b);
+    }
+
+    private ArrayList<Player> getPlayer() {
         return players;
     }
 
