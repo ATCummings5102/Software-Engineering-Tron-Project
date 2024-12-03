@@ -4,24 +4,22 @@ import java.awt.event.KeyEvent;
 
 public class GameController {
     private Arena arena;
-    private Player player1;
-    private Player player2;
+    private Player player;
     private ScoreBoard scoreBoard;
     private Timer gameLoop; // Game loop timer
     private int round;
-    private int player1Wins;
-    private int player2Wins;
+    private int playerWins;
     private final int MAX_WINS = 3; // Number of wins to end the game
+    private CollisionHandler collisionHandler;
 
     // Constructor to initialize the game
-    public GameController(Arena arena, Player player1, Player player2, ScoreBoard scoreBoard) {
+    public GameController(Arena arena, Player player, ScoreBoard scoreBoard) {
         this.arena = arena;
-        this.player1 = player1;
-        this.player2 = player2;
+        this.player = player;
         this.scoreBoard = scoreBoard;
         this.round = 1;
-        this.player1Wins = 0;
-        this.player2Wins = 0;
+        this.playerWins = 0;
+        this.collisionHandler = new CollisionHandler(); // Initialize collisionHandler
 
         // Initialize game loop
         this.gameLoop = new Timer(200, e -> updateGame());
@@ -29,70 +27,39 @@ public class GameController {
 
     // Starts the game by resetting positions, clearing the arena, and starting the game loop
     public void startGame() {
-        arena.reset(player1, player2);
-        player1.resetPosition(new Position(4, 4), Direction.DOWN);
-        player2.resetPosition(new Position(95, 95), Direction.LEFT);
-        this.gameLoop = new Timer(200, e -> updateGame());
+        arena.reset(player);
+        player.resetPosition(new Position(4, 4), Direction.DOWN);
         gameLoop.start();
     }
 
     // Updates the game state
     private void updateGame() {
         // Add their segments to their respective trails
-        arena.addSegment(player1);
-        arena.addSegment(player2);
+        arena.addSegment(player);
 
-        // Move players
-        player1.move();
-        player2.move();
+        // Move player
+        player.move();
 
         // Check for collisions
-        if (checkCollision()) {
+        if (collisionHandler.checkCollision(player, arena)) {
             gameLoop.stop(); // Stop the game loop
+            updateScore();
         }
 
         // Repaint the arena
         arena.repaint();
     }
 
-    // Checks if a player collides with walls, themselves, or the other player's trail
-    private boolean checkCollision() {
-        boolean collision1 = arena.checkCollision(player1);
-        boolean collision2 = arena.checkCollision(player2);
+    // Updates the score for the player
+    private void updateScore() {
+        scoreBoard.incrementScore(player);
+        playerWins++;
 
-        // Check if both players occupy the same position
-        if (player1.getPosition().getX() == (player2.getPosition().getX()) && player1.getPosition().getY() == (player2.getPosition().getY())) {
-            showCountdownPopup("It's a draw!");
-            return true; // Both players collided together
-        }
-
-        if (collision1 && collision2) {
-            showCountdownPopup("It's a draw!");
-            return true; // Both players collided with trails or walls
-        } else if (collision1) {
-            updateScore(player2); // Player 1 loses, Player 2 wins
-            return true;
-        } else if (collision2) {
-            updateScore(player1); // Player 2 loses, Player 1 wins
-            return true;
-        }
-        return false; // No collision
-    }
-
-    // Updates the score for the winning player
-    private void updateScore(Player winner) {
-        scoreBoard.incrementScore(winner);
-        if (winner == player1) {
-            player1Wins++;
-        } else {
-            player2Wins++;
-        }
-
-        // Check if a player has won the game
-        if (player1Wins == MAX_WINS || player2Wins == MAX_WINS) {
+        // Check if the player has won the game
+        if (playerWins == MAX_WINS) {
             endGame();
         } else {
-            showCountdownPopup(winner.getName() + " wins this round!");
+            showCountdownPopup(player.getName() + " wins this round!");
         }
     }
 
@@ -153,7 +120,6 @@ public class GameController {
         dialog.setVisible(true);
     }
 
-
     // Starts the next round
     private void startNextRound() {
         round++;
@@ -163,15 +129,13 @@ public class GameController {
 
     // Ends the game and displays the overall winner
     private void endGame() {
-        String overallWinner = (player1Wins == MAX_WINS) ? player1.getName() : player2.getName();
-        JOptionPane.showMessageDialog(null, overallWinner + " is the winner!");
+        JOptionPane.showMessageDialog(null, player.getName() + " is the winner!");
         resetGame(); // Reset for a new game
     }
 
     // Resets the game for a new session
     private void resetGame() {
-        player1Wins = 0;
-        player2Wins = 0;
+        playerWins = 0;
         scoreBoard.resetScores();
         round = 1;
         scoreBoard.updateRound(round);
@@ -181,35 +145,19 @@ public class GameController {
     public void handleKeyPress(KeyEvent e) {
         int keyCode = e.getKeyCode();
 
-        // Player 1 controls (WASD)
+        // Player controls (WASD)
         switch (keyCode) {
             case KeyEvent.VK_W:
-                if (player1 != null) player1.setDirection(Direction.UP);
+                if (player != null) player.setDirection(Direction.UP);
                 break;
             case KeyEvent.VK_A:
-                if (player1 != null) player1.setDirection(Direction.LEFT);
+                if (player != null) player.setDirection(Direction.LEFT);
                 break;
             case KeyEvent.VK_S:
-                if (player1 != null) player1.setDirection(Direction.DOWN);
+                if (player != null) player.setDirection(Direction.DOWN);
                 break;
             case KeyEvent.VK_D:
-                if (player1 != null) player1.setDirection(Direction.RIGHT);
-                break;
-        }
-
-        // Player 2 controls (Arrow Keys)
-        switch (keyCode) {
-            case KeyEvent.VK_UP:
-                if (player2 != null) player2.setDirection(Direction.UP);
-                break;
-            case KeyEvent.VK_LEFT:
-                if (player2 != null) player2.setDirection(Direction.LEFT);
-                break;
-            case KeyEvent.VK_DOWN:
-                if (player2 != null) player2.setDirection(Direction.DOWN);
-                break;
-            case KeyEvent.VK_RIGHT:
-                if (player2 != null) player2.setDirection(Direction.RIGHT);
+                if (player != null) player.setDirection(Direction.RIGHT);
                 break;
         }
     }

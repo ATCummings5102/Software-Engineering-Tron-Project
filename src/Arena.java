@@ -7,9 +7,7 @@ public class Arena extends JPanel {
     private int width;
     private int height;
     private int cellSize = 6; // Size of each square
-    private List<Position> player1Trail = new ArrayList<>(); // Player 1's trail
-    private List<Position> player2Trail = new ArrayList<>(); // Player 2's trail
-    private Player primaryPlayer;
+    private List<Position> playerTrail = new ArrayList<>(); // Player's trail
 
     public Arena(int width, int height) {
         this.width = width;
@@ -19,19 +17,8 @@ public class Arena extends JPanel {
         setMinimumSize(new Dimension(width * cellSize, height * cellSize));
     }
 
-    protected void setPlayer1Trail(List<Position> player1Trail)
-    {
-        this.player1Trail = player1Trail;
-    }
-
-    protected void setPlayer2Trail(List<Position> player2Trail)
-    {
-        this.player2Trail = player2Trail;
-    }
-
-    protected void getPrimaryPlayer(Player player)
-    {
-        this.primaryPlayer = player;
+    public void setPlayerTrail(List<Position> playerTrail) {
+        this.playerTrail = playerTrail;
     }
 
     // Adds the player's current position to their trail
@@ -50,8 +37,8 @@ public class Arena extends JPanel {
             return true;
         }
 
-        // Check for collisions with any trail
-        return isPositionInTrail(position, player1Trail) || isPositionInTrail(position, player2Trail);
+        // Check for collisions with the player's trail
+        return isPositionInTrail(position, playerTrail);
     }
 
     // Helper to check if a position is in a given trail
@@ -59,13 +46,10 @@ public class Arena extends JPanel {
         return trail.stream().anyMatch(p -> p.getX() == position.getX() && p.getY() == position.getY());
     }
 
-    // Resets the arena, clearing both players' trails
-    public void reset(Player player1, Player player2) {
-        player1Trail.clear();
-        player2Trail.clear();
-        player1Trail.add(new Position(player1.getPosition().getX(), player1.getPosition().getY())); // Add starting position
-        player2Trail.add(new Position(player2.getPosition().getX(), player2.getPosition().getY())); // Add starting position
-        repaint();
+    // Resets the arena, clearing the player's trail
+    public void reset(Player player) {
+        playerTrail.clear();
+        playerTrail.add(new Position(player.getPosition().getX(), player.getPosition().getY())); // Add starting position
     }
 
     @Override
@@ -76,15 +60,8 @@ public class Arena extends JPanel {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, width * cellSize, height * cellSize);
 
-        // Render Player 1's trail
-        g.setColor(Color.BLUE);
-        for (Position position : player1Trail) {
-            g.fillRect(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
-        }
-
-        // Render Player 2's trail
-        g.setColor(Color.YELLOW);
-        for (Position position : player2Trail) {
+        g.setColor(Color.GREEN);
+        for (Position position : playerTrail) {
             g.fillRect(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
         }
 

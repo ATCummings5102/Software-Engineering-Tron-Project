@@ -7,10 +7,11 @@ public class GameUI extends JPanel {
 
     private Player player1;
     private Player player2;
-    private Player PrimaryPlayer;
+    private Player Player;
     private Arena arena;
     private ScoreBoard scoreBoard;
     private GameController gameController;
+    private CollisionHandler collisionHandler;
     private final int arenaWidth;
     private final int arenaHeight;
 
@@ -34,28 +35,11 @@ public class GameUI extends JPanel {
         this.requestFocusInWindow();
     }
 
-    private void setPrimaryPlayer(Player player)
-    {
-        this.PrimaryPlayer = player;
-    }
-
     public void setPlayer(Player player) {
-        if (player1 == null) {
-            player1 = player;
-            arena.setPlayer1Trail(player1.getTrail());
-            scoreBoard.setPlayer1(player1);
-        } else if (player2 == null) {
-            player2 = player;
-            arena.setPlayer2Trail(player2.getTrail());
-            scoreBoard.setPlayer2(player2);
-        } else {
-            throw new IllegalStateException("Maximum number of players reached. Only two players are allowed.");
-        }
-
-        // Create the game controller when both players are set
-        if (player1 != null && player2 != null) {
+            this.Player = player;
+            arena.setPlayerTrail(Player.getTrail());
+            scoreBoard.setPlayer1(Player);
             createGameController();
-        }
     }
 
     private void createArena() {
@@ -67,7 +51,7 @@ public class GameUI extends JPanel {
     }
 
     private void createGameController() {
-        gameController = new GameController(arena, player1, player2, scoreBoard);
+        gameController = new GameController(arena, Player, scoreBoard);
         gameController.startGame();
     }
 
