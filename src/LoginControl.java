@@ -62,6 +62,7 @@ public class LoginControl implements ActionListener {
         {
             // If login is successful, call the loginSuccess() method
             loginSuccess();
+
         } else if (response instanceof Error)
         {
             // Handle error case (invalid login)

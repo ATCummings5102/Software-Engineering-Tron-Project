@@ -4,11 +4,13 @@ import java.io.IOException;
 
 public class ClientGUI extends JFrame
 {
-    
+    private GameUI gameUI; // Reference to GameUI
+    private ChatClient client; // Reference to the ChatClient
+
     public ClientGUI()
     {
         // Set up the chat client.
-        ChatClient client = new ChatClient();
+        client = new ChatClient();
         client.setHost("localhost");
         client.setPort(8300);
 
@@ -33,7 +35,6 @@ public class ClientGUI extends JFrame
         CardLayout cardLayout = new CardLayout();
         JPanel container = new JPanel(cardLayout);
 
-
         // Create the Controllers and pass the client to them
         InitialControl ic = new InitialControl(container);
         LoginControl lc = new LoginControl(container, client);
@@ -43,11 +44,13 @@ public class ClientGUI extends JFrame
         client.setLoginControl(lc);
         client.setCreateAccountControl(cac);
 
+        gameUI = new GameUI(100, 300);
+
         // Create the views and pass the respective controllers
         JPanel view1 = new InitialPanel(ic);
         JPanel view2 = new LoginPanel(lc);
         JPanel view3 = new CreateAccountPanel(cac);
-        JPanel view4 = new GameUI(100,100);
+        JPanel view4 = gameUI;
 
         // Add the views to the card layout container
         container.add(view1, "1");
@@ -68,6 +71,17 @@ public class ClientGUI extends JFrame
         setSize(800, 400);
         setLocationRelativeTo(null); // Center the window
         setVisible(true);
+
+        // Set the ChatClient to notify ClientGUI when a player is received
+        client.setClientGUI(this); // Set ClientGUI instance
+    }
+
+    // Method to access GameUI and add player (called when the player object is received)
+    public void addPlayerToGameUI(Player player) {
+        if (gameUI != null) {
+            gameUI.setPlayer(player); // Assuming addPlayer method exists in GameUI
+            gameUI.updateUI(); // Optionally, call this to refresh the UI after adding the player
+        }
     }
 
     public static void main(String[] args) {

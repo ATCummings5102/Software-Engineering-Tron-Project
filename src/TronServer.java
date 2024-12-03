@@ -86,9 +86,10 @@ public class TronServer extends AbstractServer {
     }
 
     private void createPlayer(String username) {
-        Position startPosition = new Position(4, 4); // Default starting position
+        Position startPosition = new Position(5, 15); // Default starting position
         Direction startDirection = Direction.RIGHT;  // Default direction
         Player newPlayer = new Player(username, startPosition, startDirection);
+        sendToAllClients(newPlayer);
         players.add(newPlayer);
     }
 

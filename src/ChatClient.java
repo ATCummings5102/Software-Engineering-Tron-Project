@@ -1,63 +1,63 @@
 import ocsf.client.AbstractClient;
+import java.util.ArrayList;
 
-public class ChatClient extends AbstractClient
-{
-    // Private data fields for storing the GUI controllers.
+public class ChatClient extends AbstractClient {
     private LoginControl loginControl;
     private CreateAccountControl createAccountControl;
+    private ArrayList<Player> players = new ArrayList<>();
+    private ClientGUI clientGUI; // Reference to ClientGUI
 
-    // Constructor for initializing the client with default settings.
-    public ChatClient()
-    {
+    public ChatClient() {
         super("localhost", 8300);
     }
 
-    // Setters for the GUI controllers.
-    public void setLoginControl(LoginControl loginControl)
-    {
+    // Setter for ClientGUI
+    public void setClientGUI(ClientGUI clientGUI) {
+        this.clientGUI = clientGUI;
+    }
+
+    public void setLoginControl(LoginControl loginControl) {
         this.loginControl = loginControl;
     }
 
-    public void setCreateAccountControl(CreateAccountControl createAccountControl)
-    {
+    public void setCreateAccountControl(CreateAccountControl createAccountControl) {
         this.createAccountControl = createAccountControl;
     }
 
     @Override
     public void handleMessageFromServer(Object msg) {
-        // Check if the message is related to login success or error
         if (msg instanceof String) {
-            if (msg.equals("LoginSuccessful") || ((String) msg).contains("Player joined"))
-            {
-                // Handle login success
+            if (msg.equals("LoginSuccessful") || ((String) msg).contains("Player joined")) {
                 loginControl.handleLoginResponse(msg);
-
             } else if (msg.equals("CreateAccountSuccessful")) {
-                // Handle account creation success
                 createAccountControl.handleServerResponse(msg);
             }
         } else if (msg instanceof Error) {
-            // If the message is an error, handle the error
             Error error = (Error) msg;
             String errorMessage = error.getMessage();
-
-            // Determine whether the error relates to log-in or account creation
             if (errorMessage.contains("IncorrectInfo")) {
-                // Invalid login
                 loginControl.displayError(errorMessage);
             } else if (errorMessage.contains("already in use")) {
-                // Duplicate username for account creation
                 createAccountControl.handleServerResponse(error);
+            }
+        } else if (msg instanceof Player) {
+            // Send the received player object to ClientGUI
+            if (clientGUI != null) {
+                clientGUI.addPlayerToGameUI((Player) msg);
             }
         }
     }
 
     public void connectionException(Throwable exception) {
-        System.out.println("Server connection exception: " + exception);
+        System.out.println("Server connection exception: " + exception.getMessage());
+        exception.printStackTrace();
+    }
+
+    public void addPlayerToGameUI(Player player) {
+        players.add(player);
     }
 
     public void connectionEstablished() {
         System.out.println("Connection Established");
     }
-
 }
