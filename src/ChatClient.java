@@ -55,6 +55,7 @@ public class ChatClient extends AbstractClient {
         {
             players.add((Player) msg);
             System.out.println(players.size() + " players added");
+            clientGUI.addPlayerToGameUI(players.get(players.size() - 1));
         }
     }
 
