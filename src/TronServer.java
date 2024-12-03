@@ -82,8 +82,32 @@ public class TronServer extends AbstractServer {
                     log.append("Error sending message to client: " + e.getMessage() + "\n");
                 }
             }
-        } else if (arg0 instanceof CreateAccountData) {
-            // Account creation logic here (if needed)
+        } else if (arg0 instanceof CreateAccountData createAccountData) {
+            // Handling account creation logic
+            String username = createAccountData.getUsername();
+            String password = createAccountData.getPassword();
+            log.append("Account creation attempt: Username=" + username + "\n");
+
+            Object result;
+
+            if (database.verifyAccount(username, password)) {
+                result = new Error("Username already exists.", "AccountError");
+                log.append("Account creation failed: Username already exists\n");
+            } else {
+                if (database.createNewAccount(username, password)) {
+                    result = "CreateAccountSuccessful";
+                    log.append("Account created successfully: " + username + "\n");
+                } else {
+                    result = new Error("Account creation failed. Please try again.", "AccountError");
+                    log.append("Account creation failed for: " + username + "\n");
+                }
+            }
+
+            try {
+                client.sendToClient(result);  // Sending success or error message
+            } catch (IOException e) {
+                log.append("Error sending message to client: " + e.getMessage() + "\n");
+            }
         } else if (arg0 instanceof PlayerTrailData playerTrailData) {
             String playerName = playerTrailData.getPlayerName();
             List<Position> playerTrail = playerTrailData.getPlayerTrail();

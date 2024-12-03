@@ -3,12 +3,15 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class InitialPanel extends JPanel
 {
     // Used to create buttons and also to check if false to ensure a non logged in player can't join.
     private JButton joinButton;
     private JButton hostButton;
+
+    private ScheduledExecutorService executorService;
 
     // Constructor for InitialPanel
     InitialPanel(InitialControl initialControl)
@@ -33,8 +36,22 @@ public class InitialPanel extends JPanel
 
         // Add the main panel to the center
         add(mainPanel, BorderLayout.CENTER);
+
+        // Schedule the leaderboard refresh every 5 seconds (5000 milliseconds)
+        startLeaderboardRefresh();
     }
 
+    private void startLeaderboardRefresh() {
+        executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(this::reinitializeLeaderboard, 0, 5, TimeUnit.SECONDS);
+    }
+
+    // Stop the periodic leaderboard refresh (can be called when the panel is removed or app closes)
+    public void stopLeaderboardRefresh() {
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+        }
+    }
 
     private JPanel LogoPanel()
     {
@@ -166,11 +183,9 @@ public class InitialPanel extends JPanel
         mainPanel.repaint();
     }
 
-
     // Customize button appearance
     private void customizeButton(JButton button)
     {
-
         button.setBackground(new Color(12, 4, 41, 255)); // Needs to be set on top of the buttons as well
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false); // Removes box around clicked button

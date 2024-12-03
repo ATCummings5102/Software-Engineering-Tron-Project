@@ -44,12 +44,16 @@ public class CreateAccountControl implements ActionListener {
                 return;
             }
 
+            System.out.println("Submitting...");
             // Create the data object to be sent to the server
             CreateAccountData data = new CreateAccountData(createAccountPanel.getUsername(), createAccountPanel.getPassword());
 
-            try {
-                // Send the data to the server
+            try
+            {
+                System.out.println("Sending to server: " + data.toString());
+
                 client.sendToServer(data);
+
             } catch (IOException ex) {
                 ex.printStackTrace();
                 throw new RuntimeException(ex);

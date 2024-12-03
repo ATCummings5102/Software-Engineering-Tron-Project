@@ -8,8 +8,6 @@ public class Database
 {
     private Connection conn;
 
-    private ArrayList<Player> players;
-
     public Database()
     {
         try
@@ -57,34 +55,6 @@ public class Database
         }
 
         return leaderboardData;
-    }
-
-    public ArrayList<String> query(String query)
-    {
-        ArrayList<String> results = new ArrayList<>();
-
-        try (Statement stmt = conn.createStatement()) {
-            try (ResultSet rs = stmt.executeQuery(query)) {
-                ResultSetMetaData metaData = rs.getMetaData();
-                int columnCount = metaData.getColumnCount();
-
-                while (rs.next()) {
-                    StringBuilder row = new StringBuilder();
-                    for (int i = 1; i <= columnCount; i++) {
-                        row.append(rs.getString(i));
-                        if (i < columnCount) row.append(", ");
-                    }
-                    results.add(row.toString());
-                }
-
-                if (results.isEmpty()) return null;
-            }
-        } catch (SQLException e) {
-            System.out.println("Query execution error.");
-            return null;
-        }
-
-        return results;
     }
 
     public boolean verifyAccount(String username, String password)
@@ -149,4 +119,10 @@ public class Database
 
         return false;
     }
+
+    public Connection getConnection() {
+        return conn;
+    }
+
+
 }

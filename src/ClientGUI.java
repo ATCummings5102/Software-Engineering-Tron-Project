@@ -81,7 +81,9 @@ public class ClientGUI extends JFrame {
 
     public void sendToServer(Object msg) {
         try {
+            System.out.println("it reached the method");
             client.sendToServer(msg);
+            System.out.println("Finished sending");
         } catch (IOException e) {
             e.printStackTrace();
         }
