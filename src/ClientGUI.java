@@ -44,7 +44,7 @@ public class ClientGUI extends JFrame
         client.setLoginControl(lc);
         client.setCreateAccountControl(cac);
 
-        gameUI = new GameUI(100, 300);
+        gameUI = new GameUI(100, 100);
 
         // Create the views and pass the respective controllers
         JPanel view1 = new InitialPanel(ic);
@@ -72,13 +72,15 @@ public class ClientGUI extends JFrame
         setLocationRelativeTo(null); // Center the window
         setVisible(true);
 
-        // Set the ChatClient to notify ClientGUI when a player is received
-        client.setClientGUI(this); // Set ClientGUI instance
     }
 
     // Method to access GameUI and add player (called when the player object is received)
-    public void addPlayerToGameUI(Player player) {
-        if (gameUI != null) {
+    public void addPlayerToGameUI(Player player)
+    {
+        if (gameUI != null)
+        {
+            System.out.println("Player added to the game: " + player.getName());
+
             gameUI.setPlayer(player); // Assuming addPlayer method exists in GameUI
             gameUI.updateUI(); // Optionally, call this to refresh the UI after adding the player
         }

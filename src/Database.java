@@ -8,6 +8,8 @@ public class Database
 {
     private Connection conn;
 
+    private ArrayList<Player> players;
+
     public Database()
     {
         try

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
-import ocsf.server.AbstractServer;
+import ocsf.server.*;
 import ocsf.server.ConnectionToClient;
 
 public class TronServer extends AbstractServer {
@@ -73,6 +73,7 @@ public class TronServer extends AbstractServer {
                 log.append("Player rejected: " + username + " (Maximum players reached)\n");
                 try {
                     client.sendToClient("Error: Maximum players reached. You cannot join the game.");
+                    log.append("Error: Maximum players reached: " + players.size() + "\n");
                 } catch (IOException e) {
                     log.append("Error sending message to client: " + e.getMessage() + "\n");
                 }
@@ -85,12 +86,16 @@ public class TronServer extends AbstractServer {
         }
     }
 
-    private void createPlayer(String username) {
+    private void createPlayer(String username){
         Position startPosition = new Position(5, 15); // Default starting position
         Direction startDirection = Direction.RIGHT;  // Default direction
         Player newPlayer = new Player(username, startPosition, startDirection);
-        sendToAllClients(newPlayer);
         players.add(newPlayer);
+    }
+
+    private ArrayList<Player> getPlayer()
+    {
+        return players;
     }
 
     public void setDatabase(Database database) {

@@ -15,6 +15,7 @@ public class Player {
         this.direction = startDirection;
         this.trail = new ArrayList<>();
         this.trail.add(new Position(startPosition.getX(), startPosition.getY())); // Mark initial position
+
     }
 
     public String getName() {

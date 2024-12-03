@@ -7,7 +7,8 @@ public class ChatClient extends AbstractClient {
     private ArrayList<Player> players = new ArrayList<>();
     private ClientGUI clientGUI; // Reference to ClientGUI
 
-    public ChatClient() {
+    public ChatClient()
+    {
         super("localhost", 8300);
     }
 
@@ -15,6 +16,7 @@ public class ChatClient extends AbstractClient {
     public void setClientGUI(ClientGUI clientGUI) {
         this.clientGUI = clientGUI;
     }
+
 
     public void setLoginControl(LoginControl loginControl) {
         this.loginControl = loginControl;
@@ -25,14 +27,22 @@ public class ChatClient extends AbstractClient {
     }
 
     @Override
-    public void handleMessageFromServer(Object msg) {
-        if (msg instanceof String) {
+    public void handleMessageFromServer(Object msg)
+    {
+        if (msg instanceof String)
+        {
             if (msg.equals("LoginSuccessful") || ((String) msg).contains("Player joined")) {
                 loginControl.handleLoginResponse(msg);
-            } else if (msg.equals("CreateAccountSuccessful")) {
+            } else if (msg.equals("CreateAccountSuccessful"))
+            {
                 createAccountControl.handleServerResponse(msg);
             }
-        } else if (msg instanceof Error) {
+            else if (((String) msg).contains("Error"))
+            {
+                System.out.println((String) msg);
+            }
+        }
+        else if (msg instanceof Error) {
             Error error = (Error) msg;
             String errorMessage = error.getMessage();
             if (errorMessage.contains("IncorrectInfo")) {
@@ -40,21 +50,12 @@ public class ChatClient extends AbstractClient {
             } else if (errorMessage.contains("already in use")) {
                 createAccountControl.handleServerResponse(error);
             }
-        } else if (msg instanceof Player) {
-            // Send the received player object to ClientGUI
-            if (clientGUI != null) {
-                clientGUI.addPlayerToGameUI((Player) msg);
-            }
         }
     }
 
     public void connectionException(Throwable exception) {
         System.out.println("Server connection exception: " + exception.getMessage());
         exception.printStackTrace();
-    }
-
-    public void addPlayerToGameUI(Player player) {
-        players.add(player);
     }
 
     public void connectionEstablished() {
