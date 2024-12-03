@@ -1,4 +1,6 @@
-public class Trail {
+import java.io.Serializable;
+
+public class Trail implements Serializable {
     private String playerName;
     private Position position;
     

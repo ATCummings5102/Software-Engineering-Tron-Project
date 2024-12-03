@@ -1,9 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-public class ScoreBoard extends JPanel {
+public class ScoreBoard extends JPanel implements Serializable {
     private Player player1;
     private Player player2;
     private JLabel titleLabel;

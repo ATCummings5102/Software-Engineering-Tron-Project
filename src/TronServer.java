@@ -69,7 +69,6 @@ public class TronServer extends AbstractServer {
                 log.append("Player added: " + username + "\n");
                 log.append("Player count: " + players.size() + "\n");
                 sendToAllClients("Player joined: " + username);
-                sendToAllClients(players.getLast());
             } else {
                 log.append("Player rejected: " + username + " (Maximum players reached)\n");
                 try {
@@ -91,6 +90,7 @@ public class TronServer extends AbstractServer {
         Position startPosition = new Position(5, 15); // Default starting position
         Direction startDirection = Direction.RIGHT;  // Default direction
         Player newPlayer = new Player(username, startPosition, startDirection);
+        sendToAllClients(newPlayer);
         players.add(newPlayer);
     }
 

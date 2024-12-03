@@ -51,6 +51,11 @@ public class ChatClient extends AbstractClient {
                 createAccountControl.handleServerResponse(error);
             }
         }
+        else if (msg instanceof Player)
+        {
+            players.add((Player) msg);
+            System.out.println(players.size() + " players added");
+        }
     }
 
     public void connectionException(Throwable exception) {

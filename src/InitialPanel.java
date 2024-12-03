@@ -152,10 +152,6 @@ public class InitialPanel extends JPanel
 
         return table;
     }
-    public getServerPlayers()
-    {
-
-    }
 
     public void reinitializeLeaderboard() {
         // Remove the old leaderboard panel
