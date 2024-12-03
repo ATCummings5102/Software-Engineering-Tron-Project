@@ -2,17 +2,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class ClientGUI extends JFrame
-{
+public class ClientGUI extends JFrame {
     private GameUI gameUI; // Reference to GameUI
     private ChatClient client; // Reference to the ChatClient
 
-    public ClientGUI()
-    {
+    public ClientGUI() {
         // Set up the chat client.
         client = new ChatClient();
         client.setHost("localhost");
         client.setPort(8300);
+
+        // Set the ClientGUI reference in ChatClient
+        client.setClientGUI(this); // Add this line
 
         // Try to open a connection to the server
         try {
@@ -44,6 +45,7 @@ public class ClientGUI extends JFrame
         client.setLoginControl(lc);
         client.setCreateAccountControl(cac);
 
+        // Create the GameUI instance
         gameUI = new GameUI(100, 100);
 
         // Create the views and pass the respective controllers
@@ -71,18 +73,17 @@ public class ClientGUI extends JFrame
         setSize(800, 400);
         setLocationRelativeTo(null); // Center the window
         setVisible(true);
-
     }
 
     // Method to access GameUI and add player (called when the player object is received)
-    public void addPlayerToGameUI(Player player)
-    {
-        if (gameUI != null)
-        {
+    public void addPlayerToGameUI(Player player) {
+        if (gameUI != null) {
+            gameUI.updateUI();
             System.out.println("Player added to the game: " + player.getName());
 
-            gameUI.setPlayer(player); // Assuming addPlayer method exists in GameUI
-            gameUI.updateUI(); // Optionally, call this to refresh the UI after adding the player
+            // Set the player for this instance of GameUI (only their movements will be drawn)
+            gameUI.setPlayer(player);
+            gameUI.updateUI();
         }
     }
 

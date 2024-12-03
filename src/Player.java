@@ -9,6 +9,8 @@ public class Player implements Serializable {
     private Direction direction;
     private List<Position> trail;
     private String playerLabel;
+    private static int idAssigned = 0;
+    private int ID;
 
     public Player(String name, Position startPosition, Direction startDirection) {
         this.name = name;
@@ -16,7 +18,21 @@ public class Player implements Serializable {
         this.direction = startDirection;
         this.trail = new ArrayList<>();
         this.trail.add(new Position(startPosition.getX(), startPosition.getY())); // Mark initial position
+        ID = setID();
+    }
 
+    public int setID() {
+        if (idAssigned == 0) {
+            idAssigned = 1;  // Assign ID 1 to the first player
+            return 1;
+        } else {
+            return 0;  // The second player gets ID 0
+        }
+    }
+
+    public int getID(String name)
+    {
+        return ID;
     }
 
     public String getName() {

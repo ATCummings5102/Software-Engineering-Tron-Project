@@ -14,6 +14,7 @@ public class TronServer extends AbstractServer {
     private boolean running = false;
     private Database database;
     private ArrayList<Player> players = new ArrayList<>();
+    private Player tempPlayer;
     private static final int MAX_PLAYERS = 2; // Limit to 2 players
 
     public TronServer() {
@@ -60,7 +61,8 @@ public class TronServer extends AbstractServer {
 
     @Override
     public void handleMessageFromClient(Object arg0, ConnectionToClient client) {
-        if (arg0 instanceof LoginData loginData) {
+        if (arg0 instanceof LoginData loginData)
+        {
             String username = loginData.getUsername();
             log.append("Login Attempt: Username=" + username + ", Password=" + loginData.getPassword() + "\n");
 
@@ -69,7 +71,10 @@ public class TronServer extends AbstractServer {
                 log.append("Player added: " + username + "\n");
                 log.append("Player count: " + players.size() + "\n");
                 sendToAllClients("Player joined: " + username);
-            } else {
+                sendToAllClients(tempPlayer);
+            }
+            else
+            {
                 log.append("Player rejected: " + username + " (Maximum players reached)\n");
                 try {
                     client.sendToClient("Error: Maximum players reached. You cannot join the game.");
@@ -78,9 +83,13 @@ public class TronServer extends AbstractServer {
                     log.append("Error sending message to client: " + e.getMessage() + "\n");
                 }
             }
-        } else if (arg0 instanceof CreateAccountData) {
+        }
+        else if (arg0 instanceof CreateAccountData)
+        {
             // Account creation logic here (if needed)
-        } else {
+        }
+        else
+        {
             log.append("Received message from client: " + arg0 + "\n");
             sendToAllClients(arg0); // Relay the message to all clients
         }
@@ -90,7 +99,7 @@ public class TronServer extends AbstractServer {
         Position startPosition = new Position(5, 15); // Default starting position
         Direction startDirection = Direction.RIGHT;  // Default direction
         Player newPlayer = new Player(username, startPosition, startDirection);
-        sendToAllClients(newPlayer);
+        tempPlayer = newPlayer;
         players.add(newPlayer);
     }
 

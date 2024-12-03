@@ -182,25 +182,35 @@ public class GameController {
         int keyCode = e.getKeyCode();
 
         // Player 1 controls (WASD)
-        if (keyCode == KeyEvent.VK_W) {
-            player1.setDirection(Direction.UP);
-        } else if (keyCode == KeyEvent.VK_A) {
-            player1.setDirection(Direction.LEFT);
-        } else if (keyCode == KeyEvent.VK_S) {
-            player1.setDirection(Direction.DOWN);
-        } else if (keyCode == KeyEvent.VK_D) {
-            player1.setDirection(Direction.RIGHT);
+        switch (keyCode) {
+            case KeyEvent.VK_W:
+                if (player1 != null) player1.setDirection(Direction.UP);
+                break;
+            case KeyEvent.VK_A:
+                if (player1 != null) player1.setDirection(Direction.LEFT);
+                break;
+            case KeyEvent.VK_S:
+                if (player1 != null) player1.setDirection(Direction.DOWN);
+                break;
+            case KeyEvent.VK_D:
+                if (player1 != null) player1.setDirection(Direction.RIGHT);
+                break;
         }
 
         // Player 2 controls (Arrow Keys)
-        if (keyCode == KeyEvent.VK_UP) {
-            player2.setDirection(Direction.UP);
-        } else if (keyCode == KeyEvent.VK_LEFT) {
-            player2.setDirection(Direction.LEFT);
-        } else if (keyCode == KeyEvent.VK_DOWN) {
-            player2.setDirection(Direction.DOWN);
-        } else if (keyCode == KeyEvent.VK_RIGHT) {
-            player2.setDirection(Direction.RIGHT);
+        switch (keyCode) {
+            case KeyEvent.VK_UP:
+                if (player2 != null) player2.setDirection(Direction.UP);
+                break;
+            case KeyEvent.VK_LEFT:
+                if (player2 != null) player2.setDirection(Direction.LEFT);
+                break;
+            case KeyEvent.VK_DOWN:
+                if (player2 != null) player2.setDirection(Direction.DOWN);
+                break;
+            case KeyEvent.VK_RIGHT:
+                if (player2 != null) player2.setDirection(Direction.RIGHT);
+                break;
         }
     }
 }

@@ -9,6 +9,7 @@ public class Arena extends JPanel {
     private int cellSize = 6; // Size of each square
     private List<Position> player1Trail = new ArrayList<>(); // Player 1's trail
     private List<Position> player2Trail = new ArrayList<>(); // Player 2's trail
+    private Player primaryPlayer;
 
     public Arena(int width, int height) {
         this.width = width;
@@ -26,6 +27,11 @@ public class Arena extends JPanel {
     protected void setPlayer2Trail(List<Position> player2Trail)
     {
         this.player2Trail = player2Trail;
+    }
+
+    protected void getPrimaryPlayer(Player player)
+    {
+        this.primaryPlayer = player;
     }
 
     // Adds the player's current position to their trail

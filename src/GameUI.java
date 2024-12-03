@@ -7,6 +7,7 @@ public class GameUI extends JPanel {
 
     private Player player1;
     private Player player2;
+    private Player PrimaryPlayer;
     private Arena arena;
     private ScoreBoard scoreBoard;
     private GameController gameController;
@@ -14,7 +15,8 @@ public class GameUI extends JPanel {
     private final int arenaHeight;
 
     // Constructor to initialize the game with a dynamic arena size
-    public GameUI(int arenaWidth, int arenaHeight) {
+    public GameUI(int arenaWidth, int arenaHeight)
+    {
         this.arenaWidth = arenaWidth;
         this.arenaHeight = arenaHeight;
 
@@ -30,6 +32,11 @@ public class GameUI extends JPanel {
         this.setVisible(true);
         this.setFocusable(true);
         this.requestFocusInWindow();
+    }
+
+    private void setPrimaryPlayer(Player player)
+    {
+        this.PrimaryPlayer = player;
     }
 
     public void setPlayer(Player player) {
@@ -89,4 +96,5 @@ public class GameUI extends JPanel {
             }
         });
     }
+
 }
