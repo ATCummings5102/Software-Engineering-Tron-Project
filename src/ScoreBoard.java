@@ -1,19 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.Serializable;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 
 public class ScoreBoard extends JPanel implements Serializable {
-    private Player player1;
-    private Player player2;
+    private Player player;
     private JLabel titleLabel;
-    private JLabel player1Label;
-    private JLabel player2Label;
+    private JLabel playerLabel;
     private JLabel roundLabel;
 
     public ScoreBoard() {
-        setLayout(new GridLayout(4, 1)); // 4 rows: Title, Player 1, Player 2, Round
+        setLayout(new GridLayout(3, 1)); // 3 rows: Title, Player, Round
         setPreferredSize(new Dimension(200, 0)); // Fixed width, height adjusts dynamically
 
         // Create title label
@@ -21,17 +17,11 @@ public class ScoreBoard extends JPanel implements Serializable {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(titleLabel);
 
-        // Create player 1 label
-        player1Label = new JLabel("", SwingConstants.CENTER);
-        player1Label.setFont(new Font("Arial", Font.PLAIN, 16));
-        updatePlayer1Label();
-        add(player1Label);
-
-        // Create player 2 label
-        player2Label = new JLabel("", SwingConstants.CENTER);
-        player2Label.setFont(new Font("Arial", Font.PLAIN, 16));
-        updatePlayer2Label();
-        add(player2Label);
+        // Create player label
+        playerLabel = new JLabel("", SwingConstants.CENTER);
+        playerLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        updatePlayerLabel();
+        add(playerLabel);
 
         // Create round label
         roundLabel = new JLabel("Round: 1", SwingConstants.CENTER);
@@ -39,54 +29,35 @@ public class ScoreBoard extends JPanel implements Serializable {
         add(roundLabel);
     }
 
-    public void setPlayer1(Player player1)
-    {
-        this.player1 = player1;
+    public void setPlayer(Player player) {
+        this.player = player;
+        updatePlayerLabel();
     }
 
-    public void setPlayer2(Player player2)
-    {
-        this.player2 = player2;
-    }
-
-    public void incrementScore(Player winner) {
-        winner.setScore(winner.getScore() + 1);
-        updateScores();
+    public void incrementScore(int playerId) {
+        if (player != null && player.getID() == playerId) {
+            player.setScore(player.getScore() + 1);
+            updateScores();
+        }
     }
 
     public void resetScores() {
-        player1.setScore(0);
-        player2.setScore(0);
-        updateScores();
+        if (player != null) {
+            player.setScore(0);
+            updateScores();
+        }
     }
 
-    // Update the labels based on the current scores
+    // Update the label based on the current score
     public void updateScores() {
-        updatePlayer1Label();
-        updatePlayer2Label();
+        updatePlayerLabel();
     }
 
-    private void updatePlayer1Label()
-    {
-        if(player1 == null)
-        {
-            player1Label.setText("Player1: ..........." + ": " + "Score: ............");
-        }
-        else
-        {
-            player1Label.setText(player1.getName() + ": " + player1.getScore());
-        }
-    }
-
-    private void updatePlayer2Label()
-    {
-        if(player2 == null)
-        {
-            player1Label.setText("Player1: ..........." + ": " + "Score: ............");
-        }
-        else
-        {
-            player2Label.setText(player2.getName() + ": " + player2.getScore());
+    private void updatePlayerLabel() {
+        if (player == null) {
+            playerLabel.setText("Player: ........... Score: ............");
+        } else {
+            playerLabel.setText(player.getName() + ": " + player.getScore());
         }
     }
 

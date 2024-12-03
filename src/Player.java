@@ -1,6 +1,6 @@
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Player implements Serializable {
     private String name;
@@ -9,29 +9,28 @@ public class Player implements Serializable {
     private Direction direction;
     private List<Position> trail;
     private String playerLabel;
-    private static int idAssigned = 0;
     private int ID;
+
+    public Player(String name, int ID) {
+        this.name = name;
+        this.ID = ID;
+        this.trail = new CopyOnWriteArrayList<>();
+    }
 
     public Player(String name, Position startPosition, Direction startDirection) {
         this.name = name;
         this.position = startPosition;
         this.direction = startDirection;
-        this.trail = new ArrayList<>();
+        this.trail = new CopyOnWriteArrayList<>();
         this.trail.add(new Position(startPosition.getX(), startPosition.getY())); // Mark initial position
-        ID = setID();
+        this.ID = generateUniqueID();
     }
 
-    public int setID() {
-        if (idAssigned == 0) {
-            idAssigned = 1;  // Assign ID 1 to the first player
-            return 1;
-        } else {
-            return 0;  // The second player gets ID 0
-        }
+    private int generateUniqueID() {
+        return (int) (System.currentTimeMillis() & 0xfffffff);
     }
 
-    public int getID(String name)
-    {
+    public int getID() {
         return ID;
     }
 
@@ -75,6 +74,7 @@ public class Player implements Serializable {
             case LEFT -> position = new Position(position.getX() - 1, position.getY());
             case RIGHT -> position = new Position(position.getX() + 1, position.getY());
         }
+        trail.add(new Position(position.getX(), position.getY()));
     }
 
     // Resets the player's position, direction, and trail
@@ -83,5 +83,20 @@ public class Player implements Serializable {
         this.direction = startDirection;
         this.trail.clear();
         this.trail.add(new Position(startPosition.getX(), startPosition.getY()));
+    }
+
+    // Checks if the player collides with their own trail
+    public boolean checkSelfCollision() {
+        for (int i = 0; i < trail.size() - 1; i++) {
+            if (trail.get(i).equals(position)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Checks if the player collides with the game board boundaries
+    public boolean checkBoundaryCollision(int boardWidth, int boardHeight) {
+        return position.getX() < 0 || position.getX() >= boardWidth || position.getY() < 0 || position.getY() >= boardHeight;
     }
 }

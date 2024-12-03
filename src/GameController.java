@@ -41,7 +41,7 @@ public class GameController {
         player.move();
 
         // Check for collisions
-        if (collisionHandler.checkCollision(player, arena)) {
+        if (player.checkSelfCollision() || player.checkBoundaryCollision(arena.getWidth(), arena.getHeight())) {
             gameLoop.stop(); // Stop the game loop
             updateScore();
         }
@@ -52,7 +52,7 @@ public class GameController {
 
     // Updates the score for the player
     private void updateScore() {
-        scoreBoard.incrementScore(player);
+        scoreBoard.incrementScore(player.getID());
         playerWins++;
 
         // Check if the player has won the game

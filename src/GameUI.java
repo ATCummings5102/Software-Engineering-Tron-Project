@@ -2,48 +2,50 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 public class GameUI extends JPanel {
-
-    private Player player1;
-    private Player player2;
-    private Player Player;
+    private Player player;
+    private List<Position> playerTrail;
     private Arena arena;
     private ScoreBoard scoreBoard;
     private GameController gameController;
-    private CollisionHandler collisionHandler;
     private final int arenaWidth;
     private final int arenaHeight;
+    private ClientGUI clientGUI;
 
-    // Constructor to initialize the game with a dynamic arena size
-    public GameUI(int arenaWidth, int arenaHeight)
-    {
+    public GameUI(int arenaWidth, int arenaHeight, ClientGUI clientGUI) {
         this.arenaWidth = arenaWidth;
         this.arenaHeight = arenaHeight;
+        this.clientGUI = clientGUI;
 
-        // Initialize components
         createArena();
         createScoreboard();
-
-        // Set up layout and listeners
         setupLayout();
         setupKeyListener();
 
-        // Make panel focusable for key events
         this.setVisible(true);
         this.setFocusable(true);
         this.requestFocusInWindow();
     }
 
     public void setPlayer(Player player) {
-            this.Player = player;
-            arena.setPlayerTrail(Player.getTrail());
-            scoreBoard.setPlayer1(Player);
-            createGameController();
+        this.player = player;
+        arena.setPlayerTrail(player.getTrail());
+        scoreBoard.setPlayer(player);
+        createGameController();
+    }
+
+    public void sendTrailToServer() {
+        if (player != null) {
+            playerTrail = player.getTrail();
+            PlayerTrailData data = new PlayerTrailData(player.getName(), playerTrail);
+            clientGUI.sendToServer(data);
+        }
     }
 
     private void createArena() {
-        arena = new Arena(arenaWidth, arenaHeight);
+        arena = new Arena(arenaWidth, arenaHeight, this);
     }
 
     private void createScoreboard() {
@@ -51,7 +53,7 @@ public class GameUI extends JPanel {
     }
 
     private void createGameController() {
-        gameController = new GameController(arena, Player, scoreBoard);
+        gameController = new GameController(arena, player, scoreBoard);
         gameController.startGame();
     }
 
@@ -72,7 +74,6 @@ public class GameUI extends JPanel {
             }
         });
 
-        // Ensure focus remains on the game panel
         this.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusLost(java.awt.event.FocusEvent e) {
@@ -80,5 +81,4 @@ public class GameUI extends JPanel {
             }
         });
     }
-
 }

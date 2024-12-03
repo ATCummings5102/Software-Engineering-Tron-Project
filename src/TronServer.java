@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -88,8 +89,37 @@ public class TronServer extends AbstractServer {
         {
             // Account creation logic here (if needed)
         }
+        else if (arg0 instanceof PlayerTrailData playerTrailData) {
+            String playerName = playerTrailData.getPlayerName();
+            List<Position> playerTrail = playerTrailData.getPlayerTrail();
+            log.append("Received trail data from player: " + playerName + "\n");
+            System.out.println("Received trail data from player: " + playerName + ", Trail: " + playerTrail);
+
+            // Find the player and update their trail
+            for (Player player : players) {
+                if (player.getName().equals(playerName)) {
+                    player.getTrail().clear();
+                    player.getTrail().addAll(playerTrail);
+                    log.append("Updated trail for player: " + playerName + "\n");
+                    break;
+                }
+            }
+
+            // Send the updated trail data to all other clients
+            for (Thread clientThread : getClientConnections()) {
+                ConnectionToClient otherClient = (ConnectionToClient) clientThread;
+                if (otherClient != client) {
+                    try {
+                        otherClient.sendToClient(playerTrailData);
+                    } catch (IOException e) {
+                        log.append("Error sending trail data to client: " + e.getMessage() + "\n");
+                    }
+                }
+            }
+        }
         else
         {
+
             log.append("Received message from client: " + arg0 + "\n");
             sendToAllClients(arg0); // Relay the message to all clients
         }

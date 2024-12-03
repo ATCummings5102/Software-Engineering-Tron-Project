@@ -8,10 +8,12 @@ public class Arena extends JPanel {
     private int height;
     private int cellSize = 6; // Size of each square
     private List<Position> playerTrail = new ArrayList<>(); // Player's trail
+    private GameUI gameUI; // Reference to GameUI
 
-    public Arena(int width, int height) {
+    public Arena(int width, int height, GameUI gameUI) {
         this.width = width;
         this.height = height;
+        this.gameUI = gameUI;
 
         setPreferredSize(new Dimension(width * cellSize, height * cellSize));
         setMinimumSize(new Dimension(width * cellSize, height * cellSize));
@@ -24,6 +26,7 @@ public class Arena extends JPanel {
     // Adds the player's current position to their trail
     public void addSegment(Player player) {
         player.getTrail().add(new Position(player.getPosition().getX(), player.getPosition().getY()));
+        gameUI.sendTrailToServer(); // Send trail to server
         repaint();
     }
 

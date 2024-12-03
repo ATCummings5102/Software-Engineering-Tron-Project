@@ -51,7 +51,7 @@ public class LoginControl implements ActionListener {
             }
         }
     }
-    public void handleLoginResponse(Object response) 
+    public void handleLoginResponse(Object response)
     {
         String message = (String) response;
 

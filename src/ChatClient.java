@@ -1,5 +1,6 @@
 import ocsf.client.AbstractClient;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChatClient extends AbstractClient {
     private LoginControl loginControl;
@@ -62,6 +63,26 @@ public class ChatClient extends AbstractClient {
                 System.out.println("Error: clientGUI is null. Cannot update the UI.");
             }
         }
+        else if (msg instanceof PlayerTrailData playerTrailData) {
+            String playerName = playerTrailData.getPlayerName();
+            List<Position> playerTrail = playerTrailData.getPlayerTrail();
+            System.out.println("Received trail data for player: " + playerName + ", Trail: " + playerTrail);
+
+            // Update the trail for the corresponding player
+            for (Player player : players) {
+                if (player.getName().equals(playerName)) {
+                    player.getTrail().clear();
+                    player.getTrail().addAll(playerTrail);
+                    System.out.println("Updated trail for player: " + playerName);
+                    break;
+                }
+            }
+
+            // Notify the game UI to update the display
+            if (clientGUI != null) {
+                clientGUI.updateGameUI();
+            }
+        }
     }
 
     public void connectionException(Throwable exception) {
@@ -69,7 +90,8 @@ public class ChatClient extends AbstractClient {
         exception.printStackTrace();
     }
 
-    public void connectionEstablished() {
+    public void connectionEstablished()
+    {
         System.out.println("Connection Established");
     }
 }

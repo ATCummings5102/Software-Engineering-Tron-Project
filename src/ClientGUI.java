@@ -3,87 +3,93 @@ import java.awt.*;
 import java.io.IOException;
 
 public class ClientGUI extends JFrame {
-    private GameUI gameUI; // Reference to GameUI
-    private ChatClient client; // Reference to the ChatClient
+    private GameUI gameUI;
+    private ChatClient client;
+    private CardLayout cardLayout;
+    private JPanel container;
+    private Player player;
 
     public ClientGUI() {
-        // Set up the chat client.
         client = new ChatClient();
-        client.setHost("localhost");
-        client.setPort(8300);
+        client.setClientGUI(this);
 
-        // Set the ClientGUI reference in ChatClient
-        client.setClientGUI(this); // Add this line
-
-        // Try to open a connection to the server
         try {
+            System.out.println("Attempting to connect to the server...");
             client.openConnection();
+            System.out.println("Connected to the server.");
         } catch (IOException e) {
-            // Show error message if connection fails
             JOptionPane.showMessageDialog(this,
                     "Failed to connect to the server. Please check the server and try again.",
                     "Connection Error",
                     JOptionPane.ERROR_MESSAGE);
-            // Close the application if the connection fails
+            e.printStackTrace(); // Print stack trace for debugging
             System.exit(1);
         }
 
-        // Set the title and default close operation.
         setTitle("Tron Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Create the CardLayout and container panel
-        CardLayout cardLayout = new CardLayout();
-        JPanel container = new JPanel(cardLayout);
+        cardLayout = new CardLayout();
+        container = new JPanel(cardLayout);
 
-        // Create the Controllers and pass the client to them
         InitialControl ic = new InitialControl(container);
         LoginControl lc = new LoginControl(container, client);
         CreateAccountControl cac = new CreateAccountControl(container, client);
 
-        // Set the client info in the controllers
         client.setLoginControl(lc);
         client.setCreateAccountControl(cac);
 
-        // Create the GameUI instance
-        gameUI = new GameUI(100, 100);
+        gameUI = new GameUI(100, 100, this);
 
-        // Create the views and pass the respective controllers
         JPanel view1 = new InitialPanel(ic);
         JPanel view2 = new LoginPanel(lc);
         JPanel view3 = new CreateAccountPanel(cac);
         JPanel view4 = gameUI;
 
-        // Add the views to the card layout container
         container.add(view1, "1");
         container.add(view2, "2");
         container.add(view3, "3");
         container.add(view4, "4");
 
-        // Show the initial view in the card layout
         cardLayout.show(container, "1");
 
-        // Set layout for JFrame
-        setLayout(new BorderLayout()); // Use BorderLayout to make sure the container fills the window
-
-        // Add the card layout container to the JFrame
+        setLayout(new BorderLayout());
         add(container, BorderLayout.CENTER);
 
-        // Set up the JFrame size and visibility
         setSize(800, 400);
-        setLocationRelativeTo(null); // Center the window
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    // Method to access GameUI and add player (called when the player object is received)
     public void addPlayerToGameUI(Player player) {
+        this.player = player;
         if (gameUI != null) {
+            gameUI.setPlayer(player);
+            cardLayout.show(container, "4");
             gameUI.updateUI();
             System.out.println("Player added to the game: " + player.getName());
+        }
+    }
 
-            // Set the player for this instance of GameUI (only their movements will be drawn)
-            gameUI.setPlayer(player);
-            gameUI.updateUI();
+
+    public void sendPlayerTrailData() {
+        if (player != null) {
+            PlayerTrailData playerTrailData = new PlayerTrailData(player.getName(), player.getTrail());
+            sendToServer(playerTrailData);
+        }
+    }
+
+    public void sendToServer(Object msg) {
+        try {
+            client.sendToServer(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateGameUI() {
+        if (gameUI != null) {
+            gameUI.repaint();
         }
     }
 
